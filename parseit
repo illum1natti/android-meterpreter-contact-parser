@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#####################################################################
+# Author:   Justin Breed                                            #
+# Purpose:  Grab information from output for scripting purposes     #
+#           or for importing into a DB for building a web front-end #
+# Date:     22Mar17                                                 #
+#####################################################################
+
+#THIS SCRIPT IS VERY BASIC AT THIS POINT AND NOT COMPLETE!
+
+#Usage:
+#parseit <output_contacts_xxxx>.txt
+
+#Declare variables
+lineNum=0
+currentRow=0
+numberCount=0
+lastNumber=""
+lastEmail=""
+
+#Begin the loop through the output file that was passed in
+while read line
+do
+        #Get the row for DB
+	if [[ $line == *"#"* ]]; then
+	    currentRow=${line:1}
+        fi
+
+	#Get the contact's name
+        if [[ $line == *"Name"* ]]; then
+	    echo
+            echo ${line:6}
+        fi
+
+	#Get the phone numbers
+        if [[ $line == *"Number"* ]]; then
+	    line=${line//+1}
+	    line=${line:9}
+	    line=${line//[() -]/}
+	    if [ ${line:0:1} == "1" ]; then
+                line=${line:1}
+	    fi
+	    if [[ *"$line"* != *"$lastNumber"* ]]; then
+                echo " [-] $line"
+	    fi
+	    lastNumber=$line
+        fi
+
+	#Get the emails
+        if [[ $line == *"Email"* ]]; then
+	    line=${line:8}
+	    if [[ *"$line"* != *"$lastEmail"* ]]; then
+	        echo " [+] $line" 
+	    fi
+	    lastEmail=$line
+        fi 
+    lineNum=$(($lineNum+1))
+done < $1
