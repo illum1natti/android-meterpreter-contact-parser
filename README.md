@@ -1,5 +1,5 @@
 # android-meterpreter-contact-parser
-Parses the text file pulled from the victim android phone from meterpreter
+Parses the text file pulled from the victim's phone
 
 ## This script is nowhere near compeletion. ##
 <br><br>
